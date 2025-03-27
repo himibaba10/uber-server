@@ -3,6 +3,7 @@ const {
   registerUser,
   loginUser,
   getUserProfile,
+  logoutUser,
 } = require("../controllers/user.controller");
 const {
   validateRegistration,
@@ -17,5 +18,7 @@ userRouter.post("/register", validateRegistration, registerUser);
 userRouter.post("/login", validateLogin, loginUser);
 
 userRouter.get("/profile", authUser, getUserProfile);
+
+userRouter.post("/logout", logoutUser);
 
 module.exports = userRouter;

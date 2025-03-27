@@ -3,41 +3,41 @@ const { Schema, model } = require("mongoose");
 const bcrypt = require("bcrypt");
 const { SALT, JWT_SECRET } = require("../config");
 
-const userSchema = new Schema({
-  fullname: {
-    firstname: {
+const userSchema = new Schema(
+  {
+    fullname: {
+      firstname: {
+        type: String,
+        required: true,
+        minlength: [2, "First name must be at least 2 characters long"],
+        trim: true,
+      },
+      lastname: {
+        type: String,
+        minlength: [2, "Last name must be at least 2 characters long"],
+        trim: true,
+      },
+    },
+    email: {
       type: String,
       required: true,
-      minlength: [2, "First name must be at least 2 characters long"],
+      unique: true,
+      lowercase: true,
       trim: true,
     },
-    lastname: {
+    password: {
       type: String,
-      minlength: [2, "Last name must be at least 2 characters long"],
-      trim: true,
+      required: true,
+      select: false, // Ensure password is not included in queries by default
+    },
+    socketId: {
+      type: String,
     },
   },
-  email: {
-    type: String,
-    required: true,
-    unique: true,
-    trim: true,
-    validate: {
-      validator: (value) => {
-        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
-      },
-      message: "Invalid email address",
-    },
-  },
-  password: {
-    type: String,
-    required: true,
-    select: false, // Ensure password is not included in queries by default
-  },
-  socketId: {
-    type: String,
-  },
-});
+  {
+    timestamps: true,
+  }
+);
 
 // Hash password before creating
 userSchema.pre("save", async function (next) {

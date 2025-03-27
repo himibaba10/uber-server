@@ -205,3 +205,136 @@ Example JSON:
 - The endpoint uses secure hashing to validate the password against the stored hash.
 
 ---
+
+### User Profile Endpoint Documentation
+
+## Endpoint: `/profile`
+
+### Description
+
+This endpoint retrieves the profile details of the authenticated user. It requires a valid JWT token to access.
+
+---
+
+### HTTP Method
+
+`GET`
+
+---
+
+### Request Headers
+
+The following header is required:
+
+| Header          | Type   | Required | Description                     |
+| --------------- | ------ | -------- | ------------------------------- |
+| `Authorization` | String | Yes      | Bearer token for authentication |
+
+Example Header:
+
+```
+Authorization: Bearer <your-jwt-token>
+```
+
+---
+
+### Response
+
+#### Success Response
+
+- **Status Code:** `200 OK`
+- **Body:**
+  ```json
+  {
+    "success": true,
+    "message": "User profile fetched successfully",
+    "data": {
+      "_id": "64b7f9c2e4b0f5a1d8c9e123",
+      "fullname": {
+        "firstname": "John",
+        "lastname": "Doe"
+      },
+      "email": "john.doe@example.com",
+      "createdAt": "2023-10-01T12:00:00.000Z",
+      "updatedAt": "2023-10-01T12:00:00.000Z"
+    }
+  }
+  ```
+
+#### Unauthorized Error Response
+
+- **Status Code:** `401 Unauthorized`
+- **Body:**
+  ```json
+  {
+    "success": false,
+    "message": "Authentication required"
+  }
+  ```
+
+#### Server Error Response
+
+- **Status Code:** `500 Internal Server Error`
+- **Body:**
+  ```json
+  {
+    "common": { "msg": "An unexpected error occurred" }
+  }
+  ```
+
+---
+
+### Notes
+
+- Ensure the `Authorization` header contains a valid JWT token.
+- This endpoint is protected and requires the user to be authenticated.
+
+---
+
+### User Logout Endpoint Documentation
+
+## Endpoint: `/logout`
+
+### Description
+
+This endpoint logs out the authenticated user by clearing the authentication token from the client.
+
+---
+
+### HTTP Method
+
+`POST`
+
+---
+
+### Response
+
+#### Success Response
+
+- **Status Code:** `200 OK`
+- **Body:**
+  ```json
+  {
+    "success": true,
+    "message": "User logged out successfully"
+  }
+  ```
+
+#### Server Error Response
+
+- **Status Code:** `500 Internal Server Error`
+- **Body:**
+  ```json
+  {
+    "common": { "msg": "An unexpected error occurred" }
+  }
+  ```
+
+---
+
+### Notes
+
+- This endpoint clears the authentication token from the client-side storage (e.g., cookies).
+- No request body or headers are required for this endpoint.
+
+---

@@ -5,7 +5,9 @@ const registerUser = async (req, res, next) => {
   const errors = validationResult(req);
 
   if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() });
+    const errosObj = {};
+    errors.array().forEach((err) => (errosObj[err.path] = { msg: err.msg }));
+    return res.status(400).json({ success: false, errors: errosObj });
   }
 
   try {

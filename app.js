@@ -4,6 +4,7 @@ const dotenv = require("dotenv");
 dotenv.config();
 const cors = require("cors");
 const userRouter = require("./routes/user.route");
+const globalErrorHandler = require("./middlewares/globalErrorHandler");
 
 // Middleware
 app.use(cors());
@@ -17,8 +18,6 @@ app.get("/", (req, res) => {
 app.use("/users", userRouter);
 
 // Error handling middleware
-app.use((err, req, res, next) => {
-  res.status(500).json({ success: false, errors: err });
-});
+app.use(globalErrorHandler);
 
 module.exports = app;

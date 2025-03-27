@@ -1,20 +1,11 @@
-const { validationResult } = require("express-validator");
-const { createUserToDB } = require("../services/user.service");
+const { createUserToDB, loginUserFromDB } = require("../services/user.service");
+const validateErrors = require("../utils/validateErrors");
 
 const registerUser = async (req, res, next) => {
-  const errors = validationResult(req);
-
-  if (!errors.isEmpty()) {
-    const errosObj = {};
-    errors.array().forEach((err) => (errosObj[err.path] = { msg: err.msg }));
-    return res.status(400).json({ success: false, errors: errosObj });
-  }
+  if (validateErrors(req, res)) return;
 
   try {
-    const user = await createUserToDB(req.body);
-
-    //   generateAuthToken is created using mongoose schema.methods and this function works with created instances
-    const token = user.generateAuthToken();
+    const { user, token } = await createUserToDB(req.body);
 
     res.status(201).json({
       success: true,
@@ -26,4 +17,20 @@ const registerUser = async (req, res, next) => {
   }
 };
 
-module.exports = { registerUser };
+const loginUser = async (req, res, next) => {
+  if (validateErrors(req, res)) return;
+
+  try {
+    const { user, token } = await loginUserFromDB(req.body);
+
+    res.status(201).json({
+      success: true,
+      message: "User logged in successfully",
+      data: { user, token },
+    });
+  } catch (error) {
+    next({ common: { msg: error.message } });
+  }
+};
+
+module.exports = { registerUser, loginUser };

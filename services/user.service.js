@@ -17,7 +17,10 @@ const createUserToDB = async (payload) => {
       password,
     });
 
-    return user;
+    //   generateAuthToken is created using mongoose schema.methods and this function works with created instances
+    const token = user.generateAuthToken();
+
+    return { user, token };
   } catch (error) {
     if (error.code === 11000) {
       throw new Error("Email already exists");
@@ -26,4 +29,33 @@ const createUserToDB = async (payload) => {
   }
 };
 
-module.exports = { createUserToDB };
+const loginUserFromDB = async (payload) => {
+  const { email, password } = payload;
+
+  if (!email || !password) {
+    throw new Error("All fields are required");
+  }
+
+  try {
+    const user = await User.findOne({ email }).select("+password");
+
+    if (!user) {
+      throw new Error("Invalid credentials");
+    }
+
+    // Checks if the password is correct
+    const isMatch = await user.comparePassword(password);
+
+    if (!isMatch) {
+      throw new Error("Invalid credentials");
+    }
+
+    const token = user.generateAuthToken();
+
+    return { user, token };
+  } catch (error) {
+    throw error;
+  }
+};
+
+module.exports = { createUserToDB, loginUserFromDB };

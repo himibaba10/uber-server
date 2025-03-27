@@ -98,3 +98,110 @@ Example JSON:
 - Ensure the `email` provided is unique, as duplicate emails will result in an error.
 
 ---
+
+### User Login Endpoint Documentation
+
+## Endpoint: `/login`
+
+### Description
+
+This endpoint allows a user to log in using their email and password. Upon successful authentication, it returns the user's details along with a JWT token for subsequent requests.
+
+---
+
+### HTTP Method
+
+`POST`
+
+---
+
+### Request Body
+
+The following fields are required in the request body:
+
+| Field      | Type   | Required | Description                                    |
+| ---------- | ------ | -------- | ---------------------------------------------- |
+| `email`    | String | Yes      | The email address of the user (must be valid). |
+| `password` | String | Yes      | The password for the user.                     |
+
+Example JSON:
+
+```json
+{
+  "email": "john.doe@example.com",
+  "password": "securepassword"
+}
+```
+
+---
+
+### Response
+
+#### Success Response
+
+- **Status Code:** `200 OK`
+- **Body:**
+  ```json
+  {
+    "success": true,
+    "message": "Login successful",
+    "data": {
+      "user": {
+        "_id": "64b7f9c2e4b0f5a1d8c9e123",
+        "fullname": {
+          "firstname": "John",
+          "lastname": "Doe"
+        },
+        "email": "john.doe@example.com",
+        "createdAt": "2023-10-01T12:00:00.000Z",
+        "updatedAt": "2023-10-01T12:00:00.000Z"
+      },
+      "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+    }
+  }
+  ```
+
+#### Validation Error Response
+
+- **Status Code:** `400 Bad Request`
+- **Body:**
+  ```json
+  {
+    "success": false,
+    "errors": {
+      "email": { "msg": "Email is required" },
+      "password": { "msg": "Password is required" }
+    }
+  }
+  ```
+
+#### Unauthorized Error Response
+
+- **Status Code:** `401 Unauthorized`
+- **Body:**
+  ```json
+  {
+    "success": false,
+    "message": "Invalid email or password"
+  }
+  ```
+
+#### Server Error Response
+
+- **Status Code:** `500 Internal Server Error`
+- **Body:**
+  ```json
+  {
+    "common": { "msg": "An unexpected error occurred" }
+  }
+  ```
+
+---
+
+### Notes
+
+- The `token` returned in the response can be used for authentication in subsequent requests.
+- Ensure the `email` and `password` provided are correct, as invalid credentials will result in an error.
+- The endpoint uses secure hashing to validate the password against the stored hash.
+
+---

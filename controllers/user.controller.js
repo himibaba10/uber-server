@@ -13,7 +13,7 @@ const registerUser = async (req, res, next) => {
       data: { user, token },
     });
   } catch (error) {
-    next({ common: { msg: error.message } });
+    next({ status: error.status, message: error.message });
   }
 };
 
@@ -22,6 +22,8 @@ const loginUser = async (req, res, next) => {
 
   try {
     const { user, token } = await loginUserFromDB(req.body);
+
+    res.cookie("token", token);
 
     res.status(201).json({
       success: true,
@@ -33,4 +35,12 @@ const loginUser = async (req, res, next) => {
   }
 };
 
-module.exports = { registerUser, loginUser };
+const getUserProfile = async (req, res, next) => {
+  return res.status(200).json({
+    success: true,
+    message: "User profile fetched successfully",
+    data: req.user,
+  });
+};
+
+module.exports = { registerUser, loginUser, getUserProfile };

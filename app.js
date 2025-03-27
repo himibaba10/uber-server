@@ -3,6 +3,7 @@ const app = express();
 const dotenv = require("dotenv");
 dotenv.config();
 const cors = require("cors");
+var cookieParser = require("cookie-parser");
 const userRouter = require("./routes/user.route");
 const globalErrorHandler = require("./middlewares/globalErrorHandler");
 
@@ -10,6 +11,7 @@ const globalErrorHandler = require("./middlewares/globalErrorHandler");
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true })); //for getting form data
+app.use(cookieParser());
 
 // Routes
 app.get("/", (req, res) => {

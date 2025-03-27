@@ -23,7 +23,9 @@ const createUserToDB = async (payload) => {
     return { user, token };
   } catch (error) {
     if (error.code === 11000) {
-      throw new Error("Email already exists");
+      const error = new Error("Email already exists");
+      error.status = 409;
+      throw error;
     }
     throw error;
   }

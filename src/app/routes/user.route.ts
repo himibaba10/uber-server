@@ -2,7 +2,7 @@ import { Router } from "express";
 
 import userConstants from "../constants/user.constant";
 import { userControllers } from "../controllers/user.controller";
-import authUser from "../middlewares/auth";
+import auth from "../middlewares/auth";
 
 const userRouter = Router();
 
@@ -18,7 +18,7 @@ userRouter.post(
   userControllers.loginUser
 );
 
-userRouter.get("/profile", authUser, userControllers.getUserProfile);
+userRouter.get("/profile", auth.authUser, userControllers.getUserProfile);
 
 userRouter.post("/logout", userControllers.logoutUser);
 

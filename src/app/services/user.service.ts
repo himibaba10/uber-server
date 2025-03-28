@@ -60,7 +60,11 @@ const loginUserFromDB = async (payload: Partial<TUser>) => {
 
   const token = user.generateAuthToken();
 
-  return { user, token };
+  // Making the user document as plain object
+  const userData = user.toObject();
+  delete (userData as { password?: string }).password; // Remove the password field from the object
+
+  return { user: userData, token };
 };
 
 export const userServices = { createUserToDB, loginUserFromDB };

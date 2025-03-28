@@ -28,6 +28,7 @@ const loginUser = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { user, token } = await userServices.loginUserFromDB(req.body);
 
+    // Set the token in a browser cookie
     res.cookie("token", token);
 
     res.status(201).json({

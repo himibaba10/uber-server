@@ -57,4 +57,33 @@ const createCaptainToDB = async (payload: TCaptain) => {
   }
 };
 
-export const captainServices = { createCaptainToDB };
+const loginCaptainFromDB = async (payload: Partial<TCaptain>) => {
+  const { email, password } = payload;
+
+  if (!email || !password) {
+    throw new Error("All fields are required");
+  }
+
+  const captain = await Captain.findOne({ email }).select("+password");
+
+  if (!captain) {
+    throw new Error("Invalid credentials");
+  }
+
+  // Checks if the password is correct
+  const isMatch = await captain.comparePassword(password);
+
+  if (!isMatch) {
+    throw new Error("Invalid credentials");
+  }
+
+  const token = captain.generateAuthToken();
+
+  // Making the captain document as plain object
+  const captainData = captain.toObject();
+  delete (captainData as { password?: string }).password; // Remove the password field from the object
+
+  return { captain: captainData, token };
+};
+
+export const captainServices = { createCaptainToDB, loginCaptainFromDB };

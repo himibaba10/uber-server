@@ -471,3 +471,207 @@ Example JSON:
 - The `token` returned in the response can be used for authentication in subsequent requests.
 - Ensure the `email` and `vehicle.plate` provided are unique, as duplicates will result in an error.
 - The `vehicle.vehicleType` must be one of the following: `car`, `motorcycle`, or `auto`.
+
+## Captain Login Endpoint Documentation
+
+### Endpoint: `/captains/login`
+
+### Description
+
+This endpoint allows a captain to log in using their email and password. Upon successful authentication, it returns the captain's details along with a JWT token for subsequent requests.
+
+---
+
+### HTTP Method
+
+`POST`
+
+---
+
+### Request Body
+
+The following fields are required in the request body:
+
+| Field      | Type   | Required | Description                                       |
+| ---------- | ------ | -------- | ------------------------------------------------- |
+| `email`    | String | Yes      | The email address of the captain (must be valid). |
+| `password` | String | Yes      | The password for the captain.                     |
+
+Example JSON:
+
+```json
+{
+  "email": "jane.doe@example.com",
+  "password": "securepassword"
+}
+```
+
+---
+
+### Response
+
+#### Success Response
+
+- **Status Code:** `200 OK`
+- **Body:**
+  ```json
+  {
+    "success": true,
+    "message": "Login successful",
+    "data": {
+      "captain": {
+        "_id": "64b7f9c2e4b0f5a1d8c9e456",
+        "fullname": {
+          "firstname": "Jane",
+          "lastname": "Doe"
+        },
+        "email": "jane.doe@example.com",
+        "vehicle": {
+          "color": "Red",
+          "plate": "ABC123",
+          "capacity": 4,
+          "vehicleType": "car"
+        },
+        "status": "active",
+        "createdAt": "2023-10-01T12:00:00.000Z",
+        "updatedAt": "2023-10-01T12:00:00.000Z"
+      },
+      "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+    }
+  }
+  ```
+
+#### Validation Error Response
+
+- **Status Code:** `400 Bad Request`
+- **Body:**
+  ```json
+  {
+    "success": false,
+    "errors": {
+      "email": { "msg": "Email is required" },
+      "password": { "msg": "Password is required" }
+    }
+  }
+  ```
+
+#### Unauthorized Error Response
+
+- **Status Code:** `401 Unauthorized`
+- **Body:**
+  ```json
+  {
+    "success": false,
+    "message": "Invalid email or password"
+  }
+  ```
+
+#### Server Error Response
+
+- **Status Code:** `500 Internal Server Error`
+- **Body:**
+  ```json
+  {
+    "common": { "msg": "An unexpected error occurred" }
+  }
+  ```
+
+---
+
+### Notes
+
+- The `token` returned in the response can be used for authentication in subsequent requests.
+- Ensure the `email` and `password` provided are correct, as invalid credentials will result in an error.
+- The endpoint uses secure hashing to validate the password against the stored hash.
+
+---
+
+## Captain Profile Endpoint Documentation
+
+### Endpoint: `/captains/profile`
+
+### Description
+
+This endpoint retrieves the profile details of the authenticated captain. It requires a valid JWT token to access.
+
+---
+
+### HTTP Method
+
+`GET`
+
+---
+
+### Request Headers
+
+The following header is required:
+
+| Header          | Type   | Required | Description                     |
+| --------------- | ------ | -------- | ------------------------------- |
+| `Authorization` | String | Yes      | Bearer token for authentication |
+
+Example Header:
+
+```
+Authorization: Bearer <your-jwt-token>
+```
+
+---
+
+### Response
+
+#### Success Response
+
+- **Status Code:** `200 OK`
+- **Body:**
+  ```json
+  {
+    "success": true,
+    "message": "Captain profile fetched successfully",
+    "data": {
+      "_id": "64b7f9c2e4b0f5a1d8c9e456",
+      "fullname": {
+        "firstname": "Jane",
+        "lastname": "Doe"
+      },
+      "email": "jane.doe@example.com",
+      "vehicle": {
+        "color": "Red",
+        "plate": "ABC123",
+        "capacity": 4,
+        "vehicleType": "car"
+      },
+      "status": "active",
+      "createdAt": "2023-10-01T12:00:00.000Z",
+      "updatedAt": "2023-10-01T12:00:00.000Z"
+    }
+  }
+  ```
+
+#### Unauthorized Error Response
+
+- **Status Code:** `401 Unauthorized`
+- **Body:**
+  ```json
+  {
+    "success": false,
+    "message": "Authentication required"
+  }
+  ```
+
+#### Server Error Response
+
+- **Status Code:** `500 Internal Server Error`
+- **Body:**
+  ```json
+  {
+    "common": { "msg": "An unexpected error occurred" }
+  }
+  ```
+
+---
+
+### Notes
+
+- Ensure the `Authorization` header contains a valid JWT token.
+- This endpoint is protected and requires the captain to be authenticated.

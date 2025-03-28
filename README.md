@@ -675,3 +675,49 @@ Authorization: Bearer <your-jwt-token>
 
 - Ensure the `Authorization` header contains a valid JWT token.
 - This endpoint is protected and requires the captain to be authenticated.
+
+## Captain Logout Endpoint Documentation
+
+### Endpoint: `/captains/logout`
+
+### Description
+
+This endpoint logs out the authenticated captain by clearing the authentication token from the client.
+
+---
+
+### HTTP Method
+
+`POST`
+
+---
+
+### Response
+
+#### Success Response
+
+- **Status Code:** `200 OK`
+- **Body:**
+  ```json
+  {
+    "success": true,
+    "message": "Captain logged out successfully"
+  }
+  ```
+
+#### Server Error Response
+
+- **Status Code:** `500 Internal Server Error`
+- **Body:**
+  ```json
+  {
+    "common": { "msg": "An unexpected error occurred" }
+  }
+  ```
+
+---
+
+### Notes
+
+- This endpoint clears the authentication token from the client-side storage (e.g., cookies).
+- No request body or headers are required for this endpoint.

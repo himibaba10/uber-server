@@ -24,4 +24,6 @@ captainRouter.get(
   captainControllers.getCaptainProfile
 );
 
+captainRouter.post("/logout", captainControllers.logoutCaptain);
+
 export default captainRouter;

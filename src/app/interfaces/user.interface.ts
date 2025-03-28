@@ -6,6 +6,4 @@ export type TUser = {
   email: string;
   password: string;
   socketId?: string;
-  createdAt?: Date;
-  updatedAt?: Date;
 };

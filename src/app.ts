@@ -7,6 +7,7 @@ var cookieParser = require("cookie-parser");
 
 import userRouter from "./app/routes/user.route";
 import globalErrorHandler from "./app/middlewares/globalErrorHandler";
+import captainRouter from "./app/routes/captain.route";
 
 // Middleware
 app.use(cors());
@@ -19,6 +20,7 @@ app.get("/", (req, res) => {
   res.send("Hello, World!");
 });
 app.use("/users", userRouter);
+app.use("/captains", captainRouter);
 
 // Error handling middleware
 app.use(globalErrorHandler);

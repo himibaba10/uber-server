@@ -6,6 +6,7 @@ const createUserToDB = async (payload: TUser) => {
     fullname: { firstname, lastname },
     email,
     password,
+    socketId,
   } = payload;
 
   if (!firstname || !email || !password) {
@@ -20,6 +21,7 @@ const createUserToDB = async (payload: TUser) => {
       },
       email,
       password,
+      socketId,
     });
 
     //   generateAuthToken is created using mongoose schema.methods and this function works with created instances

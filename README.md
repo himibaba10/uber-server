@@ -338,3 +338,136 @@ This endpoint logs out the authenticated user by clearing the authentication tok
 - No request body or headers are required for this endpoint.
 
 ---
+
+## Captain Registration Endpoint Documentation
+
+### Endpoint: `/captains/register`
+
+### Description
+
+This endpoint is used to register a new captain in the system. It validates the input data, creates a new captain in the database, and returns a success response along with an authentication token.
+
+---
+
+### HTTP Method
+
+`POST`
+
+---
+
+### Request Body
+
+The following fields are required in the request body:
+
+| Field                 | Type   | Required | Description                                            |
+| --------------------- | ------ | -------- | ------------------------------------------------------ |
+| `fullname.firstname`  | String | Yes      | The first name of the captain (min 2 chars).           |
+| `fullname.lastname`   | String | No       | The last name of the captain (min 2 chars).            |
+| `email`               | String | Yes      | The email address of the captain (must be valid).      |
+| `password`            | String | Yes      | The password for the captain (min 6 chars).            |
+| `vehicle.color`       | String | Yes      | The color of the captain's vehicle.                    |
+| `vehicle.plate`       | String | Yes      | The license plate of the captain's vehicle.            |
+| `vehicle.capacity`    | Number | Yes      | The capacity of the captain's vehicle (min 1).         |
+| `vehicle.vehicleType` | String | Yes      | The type of the vehicle (`car`, `motorcycle`, `auto`). |
+
+Example JSON:
+
+```json
+{
+  "fullname": {
+    "firstname": "Jane",
+    "lastname": "Doe"
+  },
+  "email": "jane.doe@example.com",
+  "password": "securepassword",
+  "vehicle": {
+    "color": "Red",
+    "plate": "ABC123",
+    "capacity": 4,
+    "vehicleType": "car"
+  }
+}
+```
+
+---
+
+### Response
+
+#### Success Response
+
+- **Status Code:** `201 Created`
+- **Body:**
+  ```json
+  {
+    "success": true,
+    "message": "Captain created successfully",
+    "data": {
+      "captain": {
+        "_id": "64b7f9c2e4b0f5a1d8c9e456",
+        "fullname": {
+          "firstname": "Jane",
+          "lastname": "Doe"
+        },
+        "email": "jane.doe@example.com",
+        "vehicle": {
+          "color": "Red",
+          "plate": "ABC123",
+          "capacity": 4,
+          "vehicleType": "car"
+        },
+        "status": "active",
+        "createdAt": "2023-10-01T12:00:00.000Z",
+        "updatedAt": "2023-10-01T12:00:00.000Z"
+      },
+      "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+    }
+  }
+  ```
+
+#### Validation Error Response
+
+- **Status Code:** `400 Bad Request`
+- **Body:**
+  ```json
+  {
+    "success": false,
+    "errors": {
+      "email": { "msg": "Invalid email" },
+      "fullname.firstname": {
+        "msg": "First name must be at least 2 characters"
+      },
+      "password": { "msg": "Password must be at least 6 characters" },
+      "vehicle.color": { "msg": "Vehicle color is required" }
+    }
+  }
+  ```
+
+#### Conflict Error Response
+
+- **Status Code:** `409 Conflict`
+- **Body:**
+  ```json
+  {
+    "success": false,
+    "message": "Email already exists"
+  }
+  ```
+
+#### Server Error Response
+
+- **Status Code:** `500 Internal Server Error`
+- **Body:**
+  ```json
+  {
+    "common": { "msg": "An unexpected error occurred" }
+  }
+  ```
+
+---
+
+### Notes
+
+- The `password` field is hashed before being stored in the database.
+- The `token` returned in the response can be used for authentication in subsequent requests.
+- Ensure the `email` and `vehicle.plate` provided are unique, as duplicates will result in an error.
+- The `vehicle.vehicleType` must be one of the following: `car`, `motorcycle`, or `auto`.

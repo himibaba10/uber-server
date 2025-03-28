@@ -2,16 +2,16 @@ import jwt from "jsonwebtoken";
 import { Schema, model, Document } from "mongoose";
 import bcrypt from "bcrypt";
 import config from "../config";
-import { TUser } from "../interfaces/user.interface";
+import { TCaptain } from "../interfaces/captain.interface";
 import generateAuthToken from "../utils/generateAuthToken";
 
 // Extend the TUser type to include Mongoose Document methods
-interface IUser extends TUser, Document {
+interface ICaptain extends TCaptain, Document {
   generateAuthToken(): string;
   comparePassword(password: string): Promise<boolean>;
 }
 
-const userSchema = new Schema<IUser>(
+const captainSchema = new Schema<ICaptain>(
   {
     fullname: {
       firstname: {
@@ -41,6 +41,42 @@ const userSchema = new Schema<IUser>(
     socketId: {
       type: String,
     },
+    status: {
+      type: String,
+      enum: ["active", "inactive"],
+      default: "active",
+    },
+    vehicle: {
+      color: {
+        type: String,
+        required: true,
+        trim: true,
+      },
+      plate: {
+        type: String,
+        required: true,
+        unique: true,
+        trim: true,
+      },
+      capacity: {
+        type: Number,
+        required: true,
+        min: [1, "Capacity must be at least 1"],
+      },
+      vehicleType: {
+        type: String,
+        enum: ["car", "motorcycle", "auto"],
+        required: true,
+      },
+    },
+    location: {
+      lat: {
+        type: Number,
+      },
+      lng: {
+        type: Number,
+      },
+    },
   },
   {
     timestamps: true,
@@ -48,7 +84,7 @@ const userSchema = new Schema<IUser>(
 );
 
 // Hash password before saving
-userSchema.pre<IUser>("save", async function (next) {
+captainSchema.pre<ICaptain>("save", async function (next) {
   if (this.isModified("password")) {
     this.password = await bcrypt.hash(this.password, Number(config.SALT));
   }
@@ -56,10 +92,10 @@ userSchema.pre<IUser>("save", async function (next) {
 });
 
 // Generate authentication token
-userSchema.methods.generateAuthToken = generateAuthToken;
+captainSchema.methods.generateAuthToken = generateAuthToken;
 
 // Compare passwords
-userSchema.methods.comparePassword = async function (
+captainSchema.methods.comparePassword = async function (
   password: string
 ): Promise<boolean> {
   if (!this.password) {
@@ -70,6 +106,6 @@ userSchema.methods.comparePassword = async function (
   return await bcrypt.compare(password, this.password);
 };
 
-const User = model<IUser>("User", userSchema);
+const Captain = model<ICaptain>("Captain", captainSchema);
 
-export default User;
+export default Captain;

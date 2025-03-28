@@ -8,18 +8,18 @@ const userRouter = Router();
 
 userRouter.post(
   "/register",
-  userConstants.validateRegistration,
+  userConstants.validateUserRegistration,
   userControllers.registerUser
 );
 
 userRouter.post(
   "/login",
-  userConstants.validateLogin,
+  userConstants.validateUserLogin,
   userControllers.loginUser
 );
 
 userRouter.get("/profile", authUser, userControllers.getUserProfile);
 
 userRouter.post("/logout", userControllers.logoutUser);
-``;
+
 export default userRouter;
